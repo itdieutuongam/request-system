@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trang chủ - Đề nghị tạm ứng QTKT02-BM01</title>
+    <style>
+        body{font-family:Arial,sans-serif;background:#f0f2f5;margin:0;padding:20px;}
+        .container{max-width:1200px;margin:auto;background:white;border-radius:16px;padding:35px;box-shadow:0 10px 30px rgba(0,0,0,0.12);}
+        h1{color:#a41017;text-align:center;margin-bottom:30px;font-size:28px;text-transform:uppercase;}
+        .user-info{text-align:right;margin-bottom:20px;color:#333;}
+        .logout{color:#d32f2f;font-weight:bold;}
+        .header-links a{margin:0 12px;color:#a41017;font-weight:bold;text-decoration:none;}
+        .header-links a:hover{text-decoration:underline;}
+        .card{background:#fff;border-radius:12px;padding:25px;margin:25px 0;box-shadow:0 4px 20px rgba(0,0,0,0.08);border:1px solid #f0e1e1;}
+        h2{color:#a41017;border-bottom:3px solid #a41017;padding-bottom:12px;font-size:22px;}
+        table{width:100%;border-collapse:collapse;margin-top:15px;}
+        th{background:#a41017;color:white;padding:16px 12px;text-align:center;}
+        td{padding:14px 12px;border-bottom:1px solid #eee;text-align:center;}
+        tr:hover{background:#fdf2f4;}
+        .btn{display:inline-block;padding:11px 22px;background:#a41017;color:white;border-radius:8px;font-weight:bold;text-decoration:none;}
+        .btn:hover{background:#8B0000;transform:translateY(-2px);}
+        .empty{text-align:center;color:#666;font-style:italic;padding:60px;background:#f9f9f9;border-radius:12px;margin:40px 0;}
+        .money{font-weight:bold;color:#a41017;font-size:1.1em;}
+        .status-cho{background:#fff3e0;color:#ef6c00;padding:5px 12px;border-radius:20px;font-weight:bold;}
+        .status-duyet{background:#e8f5e8;color:#1b5e20;padding:5px 12px;border-radius:20px;font-weight:bold;}
+        .status-tuchoi{background:#ffebee;color:#c62828;padding:5px 12px;border-radius:20px;font-weight:bold;}
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>ĐỀ NGHỊ TẠM ỨNG – QTKT02-BM01</h1>
+    <div class="user-info">
+        Xin chào <strong>{{ user.name }}</strong> ({{ user.role }} - {{ user.department }})<br>
+        <div class="header-links">
+            <a href="{{ url_for('tamung_form') }}">Tạo đề nghị mới</a> |
+            <a href="{{ url_for('tamung_list') }}">Xem tất cả đề nghị</a> |
+            <a href="{{ url_for('logout') }}" class="logout">Đăng xuất</a>
+        </div>
+    </div>
+
+    {% if pending %}
+    <div class="card">
+        <h2>ĐƠN ĐANG CHỜ BẠN DUYỆT ({{ pending|length }})</h2>
+        <table>
+            <tr><th>ID</th><th>Người gửi</th><th>Ngày gửi</th><th>Số tiền</th><th>Lý do</th><th>Thao tác</th></tr>
+            {% for f in pending %}
+            <tr>
+                <td><strong>#{{ f.id }}</strong></td>
+                <td>{{ f.submitter_name }}</td>
+                <td>{{ f.submit_date }}</td>
+                <td class="money">{{ "{:,.0f}".format(f.so_tien_tam_ung) }} ₫</td>
+                <td>{{ f.ly_do_tam_ung[:50] }}{% if f.ly_do_tam_ung|length > 50 %}...{% endif %}</td>
+                <td><a href="{{ url_for('approve', form_id=f.id) }}" class="btn">Duyệt ngay</a></td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    {% endif %}
+
+    <div class="card">
+        <h2>ĐƠN TÔI ĐÃ GỬI GẦN ĐÂY</h2>
+        {% if my_forms %}
+        <table>
+            <tr><th>ID</th><th>Ngày gửi</th><th>Số tiền</th><th>Người duyệt tiếp</th><th>Trạng thái</th></tr>
+            {% for f in my_forms[:10] %}
+            <tr>
+                <td><strong>#{{ f.id }}</strong></td>
+                <td>{{ f.submit_date }}</td>
+                <td class="money">{{ "{:,.0f}".format(f.so_tien_tam_ung) }} ₫</td>
+                <td>{{ (f.next_approver or "Chưa chỉ định").split(' - ')[0] }}</td>
+                <td>
+                    {% if f.status == 'Đã duyệt' %}<span class="status-duyet">Đã duyệt</span>
+                    {% elif f.status == 'Từ chối' %}<span class="status-tuchoi">Từ chối</span>
+                    {% else %}<span class="status-cho">Chờ duyệt</span>{% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% if my_forms|length > 10 %}
+        <p style="text-align:center;margin-top:20px;">
+            <a href="{{ url_for('tamung_list') }}" style="color:#a41017;font-weight:bold;">Xem tất cả {{ my_forms|length }} đề nghị</a>
+        </p>
+        {% endif %}
+        {% else %}
+        <p class="empty">Bạn chưa gửi đề nghị tạm ứng nào.</p>
+        {% endif %}
+    </div>
+</div>
+</body>
+</html>

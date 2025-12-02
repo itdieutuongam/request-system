@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Duyệt đề nghị tạm ứng #{{ form.id }} - QTKT02-BM01</title>
+    <style>
+        body {font-family: Arial, sans-serif; background:#f4f6f9; margin:0; padding:20px;}
+        .container {max-width:1100px; margin:auto; background:white; border-radius:12px; padding:35px; box-shadow:0 8px 35px rgba(0,0,0,0.12);}
+        h1 {color:#a41017; text-align:center; font-size:27px; margin-bottom:25px; text-transform:uppercase;}
+        .back {text-align:right; margin-bottom:20px;}
+        .back a {color:#a41017; font-weight:bold; text-decoration:none; font-size:15px;}
+        .back a:hover {text-decoration:underline;}
+        .info-grid {display:grid; grid-template-columns:1fr 1fr; gap:25px; margin:30px 0;}
+        .info-box {background:#f8f9fa; padding:20px; border-radius:10px; border-left:6px solid #a41017;}
+        .info-box strong {color:#a41017; font-size:1.1em;}
+        .money-big {font-size:1.8em; font-weight:bold; color:#a41017;}
+        table {width:100%; border-collapse:collapse; margin:30px 0;}
+        th {background:#a41017; color:white; padding:14px; font-weight:bold;}
+        td {padding:12px; border:1px solid #ddd; text-align:center;}
+        td:nth-child(2) {text-align:left;}
+        tr:hover {background:#fdf2f4;}
+        .btn-group {text-align:center; margin:50px 0;}
+        .btn {padding:16px 40px; margin:15px; border:none; border-radius:12px; font-size:18px; font-weight:bold; cursor:pointer; min-width:220px; box-shadow:0 6px 20px rgba(0,0,0,0.2); transition:all 0.3s;}
+        .btn-approve {background:#2e7d32; color:white;}
+        .btn-reject {background:#d32f2f; color:white;}
+        .btn:hover {transform:scale(1.05); opacity:0.92;}
+        .file-link {color:#a41017; font-weight:bold; text-decoration:underline;}
+        .detail-list {background:#f0f8ff; padding:20px; border-radius:10px; line-height:1.8;}
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>DUYỆT ĐỀ NGHỊ TẠM ỨNG #{{ form.id }}</h1>
+    <div class="back">
+        <strong>{{ user.name }}</strong> ({{ user.role }}) |
+        <a href="{{ url_for('dashboard') }}">← Về trang chủ</a>
+    </div>
+
+    <div class="info-grid">
+        <div class="info-box">
+            <strong>Người đề nghị:</strong> {{ form.submitter_name }}<br>
+            <strong>Phòng ban:</strong> {{ form.phong_ban }}<br>
+            <strong>Ngày gửi:</strong> {{ form.submit_date }}
+        </div>
+        <div class="info-box">
+            <strong>Số tiền tạm ứng:</strong> 
+            <div class="money-big">{{ "{:,.0f}".format(form.so_tien_tam_ung) }} VND</div>
+            <strong>Số tiền bằng chữ:</strong> {{ form.so_tien_bang_chu }}<br>
+            <strong>Hình thức:</strong> {{ form.hinh_thuc_tam_ung }}
+        </div>
+    </div>
+
+    <div class="info-box" style="grid-column:1/-1;">
+        <strong>Lý do tạm ứng:</strong>
+        <div class="detail-list">{{ form.ly_do_tam_ung | replace("\n", "<br>") | safe }}</div>
+    </div>
+
+    <div class="info-grid">
+        <div class="info-box">
+            <strong>Thời hạn hoàn ứng:</strong> {{ form.thoi_han_hoan_ung or "Không ghi" }}<br>
+            <strong>Thời hạn thanh toán:</strong> {{ form.thoi_han_thanh_toan or "Không ghi" }}
+        </div>
+        <div class="info-box">
+            <strong>Tổng cộng (từ bảng chi tiết):</strong>
+            <div class="money-big">{{ "{:,.0f}".format(form.tong_cong) }} VND</div>
+        </div>
+    </div>
+
+    {% set chi_tiet = form.chi_tiet_json | fromjson %}
+    {% if chi_tiet %}
+    <h3 style="color:#a41017; margin:35px 0 15px; border-bottom:2px solid #a41017; padding-bottom:8px;">
+        CHI TIẾT CÁC KHOẢN TẠM ỨNG
+    </h3>
+    <table>
+        <tr><th>STT</th><th>Nội dung tạm ứng</th><th>Số tiền (VND)</th></tr>
+        {% for item in chi_tiet %}
+        <tr>
+            <td><strong>{{ item.stt }}</strong></td>
+            <td style="text-align:left;">{{ item.noi_dung }}</td>
+            <td style="font-weight:bold; color:#a41017;">{{ "{:,.0f}".format(item.so_tien) }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+
+    {% if form.attachment %}
+    <p style="text-align:center; margin:30px 0;">
+        <strong>Tệp đính kèm:</strong> 
+        <a href="{{ url_for('uploaded_file', filename=form.attachment) }}" target="_blank" class="file-link">
+            Xem tệp đính kèm
+        </a>
+    </p>
+    {% endif %}
+
+    <form method="POST" class="btn-group">
+        {% if not is_bod %}
+        <div style="margin-bottom:25px;">
+            <strong>Chuyển tiếp cho (nếu duyệt):</strong><br><br>
+            <select name="next_approver" required style="padding:12px; font-size:16px; width:480px; max-width:100%; border-radius:8px; border:2px solid #a41017;">
+                <option value="">-- Chọn người duyệt tiếp theo --</option>
+                {% for a in approvers %}
+                <option value="{{ a }}">{{ a }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        {% endif %}
+
+        <button type="submit" name="decision" value="approve" class="btn btn-approve">
+            {% if is_bod %}HOÀN TẤT DUYỆT{% else %}DUYỆT & CHUYỂN TIẾP{% endif %}
+        </button>
+
+        <button type="submit" name="decision" value="reject" class="btn btn-reject">
+            TỪ CHỐI
+        </button>
+    </form>
+
+    <div style="text-align:center; margin-top:40px;">
+        <a href="{{ url_for('dashboard') }}" style="color:#a41017; font-weight:bold;">
+            ← Quay lại danh sách chờ duyệt
+        </a>
+    </div>
+</div>
+</body>
+</html>

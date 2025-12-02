@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đề nghị tạm ứng - QTKT02-BM01</title>
+    <style>
+        body {background:#f4f6f9; margin:0; padding:20px; font-family:Arial,sans-serif; line-height:1.6;}
+        .container {max-width:1100px; margin:auto; background:white; padding:40px; border-radius:16px; box-shadow:0 10px 40px rgba(0,0,0,0.12);}
+        .header {display:grid; grid-template-columns:1fr auto 1fr; align-items:center; border-bottom:3px solid #a41017; padding-bottom:15px; margin-bottom:30px;}
+        .company {font-weight:bold; font-size:19px; color:#a41017;}
+        .title {text-align:center; font-size:28px; color:#a41017; font-weight:bold; text-transform:uppercase;}
+        .code {text-align:right; font-size:13px; color:#555;}
+        .user-bar {text-align:right; margin-bottom:25px; font-size:15px;}
+        .user-bar a {color:#a41017; font-weight:bold; text-decoration:none; margin:0 8px;}
+        .user-bar a:hover {text-decoration:underline;}
+        .grid {display:grid; grid-template-columns:1fr 1fr; gap:28px; margin:28px 0;}
+        .full {grid-column:1/-1;}
+        label {display:block; margin:16px 0 8px; font-weight:bold; color:#333; font-size:15px;}
+        input, select, textarea {
+            width:100%; padding:14px; border:1px solid #ccc; border-radius:8px; font-size:15px;
+            box-sizing:border-box; transition:all 0.3s;
+        }
+        input:focus, select:focus, textarea:focus {border-color:#a41017; outline:none; box-shadow:0 0 0 3px rgba(164,16,23,0.15);}
+        textarea {min-height:110px; resize:vertical;}
+        .radio-group {display:flex; gap:30px; align-items:center; margin:15px 0;}
+        .radio-group label {font-weight:normal; margin:0; cursor:pointer;}
+
+        /* Bảng chi tiết */
+        #detail-table th {background:#a41017; color:white; padding:14px; text-align:center; font-weight:bold;}
+        #detail-table td {padding:10px; vertical-align:middle;}
+        #detail-table input {padding:10px; font-size:14px;}
+        .remove-row {background:none; border:none; color:#d32f2f; font-size:20px; cursor:pointer;}
+        .add-btn {background:#a41017; color:white; padding:12px 24px; border:none; border-radius:8px; cursor:pointer; font-size:15px; font-weight:bold;}
+        .add-btn:hover {background:#8B0000;}
+        .total-box {margin:20px 0; padding:18px; background:#e3f2fd; border-radius:10px; font-size:18px; font-weight:bold; text-align:right;}
+
+        .file-upload {
+            border:3px dashed #a41017; padding:30px; border-radius:12px; text-align:center; background:#fdf2f4; margin:30px 0;
+        }
+        .file-upload input {margin-top:10px;}
+
+        .submit-btn {
+            display:block; width:100%; padding:18px; background:#a41017; color:white; border:none; border-radius:12px;
+            font-size:20px; font-weight:bold; cursor:pointer; margin-top:40px;
+        }
+        .submit-btn:hover {background:#8B0000; transform:translateY(-2px); box-shadow:0 8px 25px rgba(164,16,23,0.4);}
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <div class="company">CÔNG TY CỔ PHẦN DIỆU TƯỢNG AM</div>
+        <div class="title">ĐỀ NGHỊ TẠM ỨNG</div>
+        <div class="code">
+            <strong>Số hiệu biểu mẫu:</strong> QTKT02-BM01<br>
+            Ban hành lần: 01 | Ngày hiệu lực: 29/08/2022
+        </div>
+    </div>
+
+    <div class="user-bar">
+        Xin chào <strong>{{ user.name }}</strong> |
+        <a href="{{ url_for('dashboard') }}">Trang chủ</a> |
+        <a href="{{ url_for('logout') }}">Đăng xuất</a>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div style="padding:16px; background:#d4edda; color:#155724; border-left:6px solid #28a745; border-radius:8px; margin:25px 0;">
+          {% for c,m in messages %}{{ m }}<br>{% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <form method="POST" enctype="multipart/form-data">
+        <div class="grid">
+            <div>
+                <label>Họ và tên người đề nghị</label>
+                <input type="text" value="{{ user.name }}" disabled>
+            </div>
+            <div>
+                <label>Phòng ban</label>
+                <select name="phong_ban" required>
+                    {% for d in departments %}
+                    <option value="{{ d }}" {% if d == user.department %}selected{% endif %}>{{ d }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <!-- THÊM TRƯỜNG THÀNH PHỐ -->
+        <div class="grid">
+            <div>
+                <label>Thành phố <span style="color:red;">*</span></label>
+                <select name="thanh_pho" required>
+                    <option value="" disabled selected>-- Chọn thành phố --</option>
+                    <option value="HỒ CHÍ MINH">HỒ CHÍ MINH</option>
+                    <option value="HÀ NỘI">HÀ NỘI</option>
+                </select>
+            </div>
+            <div>
+                <label>Số tiền tạm ứng (VND)</label>
+                <input type="number" name="so_tien_tam_ung" id="so_tien" min="0" readonly>
+            </div>
+        </div>
+
+        <div class="full">
+            <label>Số tiền bằng chữ</label>
+            <input type="text" name="so_tien_bang_chu" placeholder="VD: Một trăm triệu đồng chẵn" required>
+        </div>
+
+        <label>Hình thức tạm ứng</label>
+        <div class="radio-group">
+            <label><input type="radio" name="hinh_thuc_tam_ung" value="Tiền mặt" checked> Tiền mặt</label>
+            <label><input type="radio" name="hinh_thuc_tam_ung" value="Chuyển khoản"> Chuyển khoản</label>
+        </div>
+
+        <div class="grid">
+            <div>
+                <label>Lý do tạm ứng <span style="color:red;">*</span></label>
+                <textarea name="ly_do_tam_ung" required placeholder="Mô tả chi tiết lý do cần tạm ứng..."></textarea>
+            </div>
+            <div>
+                <label>Thời hạn hoàn ứng <span style="color:red;">*</span></label>
+                <input type="date" name="thoi_han_hoan_ung" required>
+            </div>
+        </div>
+
+        <div class="grid">
+            <div>
+                <label>Thời hạn thanh toán</label>
+                <input type="date" name="thoi_han_thanh_toan">
+            </div>
+            <div></div>
+        </div>
+
+        <!-- BẢNG CHI TIẾT ĐẸP + THÊM DÒNG ĐỘNG -->
+        <div class="full">
+            <label>Chi tiết các khoản tạm ứng</label>
+            <table id="detail-table" style="width:100%; border-collapse:collapse; margin:15px 0; border:1px solid #ddd;">
+                <thead>
+                    <tr>
+                        <th style="width:8%;">STT</th>
+                        <th style="width:62%;">Nội dung tạm ứng</th>
+                        <th style="width:25%;">Số tiền (VND)</th>
+                        <th style="width:5%;"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="detail-row">
+                        <td class="stt">1</td>
+                        <td><input type="text" name="noi_dung_1" required placeholder="Nhập nội dung"></td>
+                        <td><input type="number" name="so_tien_1" min="0" class="so-tien-input" required oninput="tinhTong()"></td>
+                        <td><button type="button" class="remove-row" onclick="xoaDong(this)">X</button></td>
+                    </tr>
+                </tbody>
+            </table>
+            <button type="button" class="add-btn" onclick="themDong()">+ Thêm khoản tạm ứng</button>
+
+            <div class="total-box">
+                TỔNG CỘNG: <span id="tong_cong">0</span> VND
+            </div>
+        </div>
+
+        <div class="full file-upload">
+            <h3>Đính kèm chứng từ (nếu có)</h3>
+            <input type="file" name="attachment" accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.png,.jpeg">
+            <p style="margin-top:10px; color:#666; font-size:14px;">Chấp nhận: PDF, Word, Excel, hình ảnh (tối đa 16MB)</p>
+        </div>
+
+        <div class="full">
+            <label>Người duyệt tiếp theo <span style="color:red;">*</span></label>
+            <select name="approver" required style="padding:14px; font-size:16px;">
+                <option value="" disabled selected>-- Chọn người duyệt --</option>
+                {% for a in approvers %}
+                <option value="{{ a }}">{{ a }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <button type="submit" class="submit-btn">GỬI ĐỀ NGHỊ & CHUYỂN DUYỆT</button>
+    </form>
+</div>
+
+<script>
+let sttCounter = 1;
+
+function themDong() {
+    sttCounter++;
+    const tbody = document.querySelector('#detail-table tbody');
+    const row = tbody.insertRow();
+    row.className = "detail-row";
+    row.innerHTML = `
+        <td class="stt">${sttCounter}</td>
+        <td><input type="text" name="noi_dung_${sttCounter}" required placeholder="Nhập nội dung"></td>
+        <td><input type="number" name="so_tien_${sttCounter}" min="0" class="so-tien-input" required oninput="tinhTong()"></td>
+        <td><button type="button" class="remove-row" onclick="xoaDong(this)">X</button></td>
+    `;
+}
+
+function xoaDong(btn) {
+    if (document.querySelectorAll('.detail-row').length <= 1) {
+        alert("Phải có ít nhất 1 dòng chi tiết!");
+        return;
+    }
+    btn.closest('tr').remove();
+    capNhatSTT();
+    tinhTong();
+}
+
+function capNhatSTT() {
+    sttCounter = 1;
+    document.querySelectorAll('.detail-row').forEach(row => {
+        row.querySelector('.stt').textContent = sttCounter++;
+    });
+}
+
+function tinhTong() {
+    let tong = 0;
+    document.querySelectorAll('.so-tien-input').forEach(input => {
+        tong += parseFloat(input.value) || 0;
+    });
+    document.getElementById('tong_cong').textContent = tong.toLocaleString('vi-VN');
+    document.getElementById('so_tien').value = tong;
+}
+
+// Khởi tạo
+tinhTong();
+</script>
+</body>
+</html>
