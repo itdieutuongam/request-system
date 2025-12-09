@@ -16,6 +16,7 @@ app.jinja_env.filters['fromjson'] = lambda v: json.loads(v) if v else []
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 DB_NAME = "tamung_database.db"
 
+
 # ==================== HELPER: chuyển row → dict + ép kiểu số tiền ====================
 def get_db_connection():
     conn = sqlite3.connect(DB_NAME)
@@ -76,57 +77,58 @@ def init_db():
 # ==================== DATA ====================
 USERS = {
     # ==================== BOD ====================
-    "truongkhuong@dieutuongam.com": {"name": "TRƯƠNG HUỆ KHƯƠNG",           "role": "BOD",       "department": "BOD",                                   "password": "123456"},
-     "hongtuyet@dieutuongam.com": {"name": "NGUYỄN THỊ HỒNG TUYẾT", "role": "BOD", "department": "BOD", "password": "123456"},
+    "truongkhuong@dieutuongam.com": {"name": "TRƯƠNG HUỆ KHƯƠNG", "role": "BOD", "department": "BOD"},
+    "hongtuyet@dieutuongam.com": {"name": "NGUYỄN THỊ HỒNG TUYẾT", "role": "BOD", "department": "BOD"},
 
     # ==================== PHÒNG HCNS-IT ====================
-    "it@dieutuongam.com":           {"name": "TRẦN CÔNG KHÁNH",             "role": "Manager",   "department": "PHÒNG HCNS-IT",                         "password": "123456"},
-    "anthanh@dieutuongam.com":      {"name": "NGUYỄN THỊ AN THANH",         "role": "Manager",   "department": "PHÒNG HCNS-IT",                         "password": "123456"},
-    "hcns@dieutuongam.com":         {"name": "NHÂN SỰ DTA",                 "role": "Employee",  "department": "PHÒNG HCNS-IT",                         "password": "123456"},
-    "yennhi@dieutuongam.com":       {"name": "TRẦN NGỌC YẾN NHI",           "role": "Employee",  "department": "PHÒNG HCNS-IT",                         "password": "123456"},
-    "info@dieutuongam.com":         {"name": "Trung Tâm Nghệ Thuật Phật Giáo Diệu Tướng Am", "role": "Employee", "department": "PHÒNG HCNS-IT",              "password": "123456"},
+    "it@dieutuongam.com": {"name": "TRẦN CÔNG KHÁNH", "role": "Manager", "department": "PHÒNG HCNS-IT"},
+    "anthanh@dieutuongam.com": {"name": "NGUYỄN THỊ AN THANH", "role": "Manager", "department": "PHÒNG HCNS-IT"},
+    "hcns@dieutuongam.com": {"name": "NHÂN SỰ DTA", "role": "Employee", "department": "PHÒNG HCNS-IT"},
+    "yennhi@dieutuongam.com": {"name": "TRẦN NGỌC YẾN NHI", "role": "Employee", "department": "PHÒNG HCNS-IT"},
+    "info@dieutuongam.com": {"name": "Trung Tâm Nghệ Thuật Phật Giáo Diệu Tướng Am", "role": "Employee", "department": "PHÒNG HCNS-IT"},
 
     # ==================== PHÒNG TÀI CHÍNH KẾ TOÁN ====================
-    "ketoan@dieutuongam.com":       {"name": "LÊ THỊ MAI ANH",              "role": "Manager",   "department": "PHÒNG TÀI CHÍNH KẾ TOÁN",                "password": "123456"},
+    "ketoan@dieutuongam.com": {"name": "LÊ THỊ MAI ANH", "role": "Manager", "department": "PHÒNG TÀI CHÍNH KẾ TOÁN"},
 
     # ==================== PHÒNG KINH DOANH HCM ====================
-    "xuanhoa@dieutuongam.com":      {"name": "LÊ XUÂN HOA",                 "role": "Manager",   "department": "PHÒNG KINH DOANH HCM",                  "password": "123456"},
-    "salesadmin@dieutuongam.com":   {"name": "NGUYỄN DUY ANH",              "role": "Employee",  "department": "PHÒNG KINH DOANH HCM",                  "password": "123456"},
-    "kho@dieutuongam.com":          {"name": "HUỲNH MINH TOÀN",             "role": "Employee",  "department": "PHÒNG KINH DOANH HCM",                  "password": "123456"},
-    "thoainha@dieutuongam.com":     {"name": "TRẦN THOẠI NHÃ",              "role": "Manager",  "department": "PHÒNG KINH DOANH HCM",                  "password": "123456"},
-    "thanhtuan.dta@gmail.com":      {"name": "BÀNH THANH TUẤN",             "role": "Employee",  "department": "PHÒNG KINH DOANH HCM",                  "password": "123456"},
-    "thientinh.dta@gmail.com":      {"name": "BÙI THIỆN TÌNH",              "role": "Employee",  "department": "PHÒNG KINH DOANH HCM",                  "password": "123456"},
-    "giathanh.dta@gmail.com":       {"name": "NGÔ GIA THÀNH",               "role": "Employee",  "department": "PHÒNG KINH DOANH HCM",                  "password": "123456"},
-    "vannhuann.dta@gmail.com":      {"name": "PHẠM VĂN NHUẬN",              "role": "Employee",  "department": "PHÒNG KINH DOANH HCM",                  "password": "123456"},
-    "minhhieuu.dta@gmail.com":      {"name": "LÊ MINH HIẾU",                "role": "Employee",  "department": "PHÒNG KINH DOANH HCM",                  "password": "123456"},
-    "thanhtrung.dta@gmail.com":     {"name": "NGUYỄN THÀNH TRUNG",          "role": "Employee",  "department": "PHÒNG KINH DOANH HCM",                  "password": "123456"},
-    "khanhngan.dta@gmail.com":      {"name": "NGUYỄN NGỌC KHÁNH NGÂN",      "role": "Employee",  "department": "PHÒNG KINH DOANH HCM",                  "password": "123456"},
-    "thitrang.dta@gmail.com":       {"name": "NGUYỄN THỊ TRANG",            "role": "Employee",  "department": "PHÒNG KINH DOANH HCM",                  "password": "123456"},
-    "thanhtienn.dta@gmail.com":     {"name": "NGUYỄN THANH TIẾN",           "role": "Employee",  "department": "PHÒNG KINH DOANH HCM",                  "password": "123456"},
+    "xuanhoa@dieutuongam.com": {"name": "LÊ XUÂN HOA", "role": "Manager", "department": "PHÒNG KINH DOANH HCM"},
+    "salesadmin@dieutuongam.com": {"name": "NGUYỄN DUY ANH", "role": "Employee", "department": "PHÒNG KINH DOANH HCM"},
+    "kho@dieutuongam.com": {"name": "HUỲNH MINH TOÀN", "role": "Employee", "department": "PHÒNG KINH DOANH HCM"},
+    "thoainha@dieutuongam.com": {"name": "TRẦN THOẠI NHÃ", "role": "Manager", "department": "PHÒNG KINH DOANH HCM"},
+    "thanhtuan.dta@gmail.com": {"name": "BÀNH THANH TUẤN", "role": "Employee", "department": "PHÒNG KINH DOANH HCM"},
+    "thientinh.dta@gmail.com": {"name": "BÙI THIỆN TÌNH", "role": "Employee", "department": "PHÒNG KINH DOANH HCM"},
+    "giathanh.dta@gmail.com": {"name": "NGÔ GIA THÀNH", "role": "Employee", "department": "PHÒNG KINH DOANH HCM"},
+    "vannhuann.dta@gmail.com": {"name": "PHẠM VĂN NHUẬN", "role": "Employee", "department": "PHÒNG KINH DOANH HCM"},
+    "minhhieuu.dta@gmail.com": {"name": "LÊ MINH HIẾU", "role": "Employee", "department": "PHÒNG KINH DOANH HCM"},
+    "thanhtrung.dta@gmail.com": {"name": "NGUYỄN THÀNH TRUNG", "role": "Employee", "department": "PHÒNG KINH DOANH HCM"},
+    "khanhngan.dta@gmail.com": {"name": "NGUYỄN NGỌC KHÁNH NGÂN", "role": "Employee", "department": "PHÒNG KINH DOANH HCM"},
+    "thitrang.dta@gmail.com": {"name": "NGUYỄN THỊ TRANG", "role": "Employee", "department": "PHÒNG KINH DOANH HCM"},
+    "thanhtienn.dta@gmail.com": {"name": "NGUYỄN THANH TIẾN", "role": "Employee", "department": "PHÒNG KINH DOANH HCM"},
 
     # ==================== PHÒNG KINH DOANH HN ====================
-    "nguyenngoc@dieutuongam.com":   {"name": "NGUYỄN THỊ NGỌC",             "role": "Manager",   "department": "PHÒNG KINH DOANH HN",                   "password": "123456"},
-    "vuthuy@dieutuongam.com":       {"name": "VŨ THỊ THÙY",                 "role": "Manager",  "department": "PHÒNG KINH DOANH HN",                   "password": "123456"},
-    "mydung.dta@gmail.com":         {"name": "HOÀNG THỊ MỸ DUNG",           "role": "Employee",  "department": "PHÒNG KINH DOANH HN",                   "password": "123456"},
+    "nguyenngoc@dieutuongam.com": {"name": "NGUYỄN THỊ NGỌC", "role": "Manager", "department": "PHÒNG KINH DOANH HN"},
+    "vuthuy@dieutuongam.com": {"name": "VŨ THỊ THÙY", "role": "Manager", "department": "PHÒNG KINH DOANH HN"},
+    "mydung.dta@gmail.com": {"name": "HOÀNG THỊ MỸ DUNG", "role": "Employee", "department": "PHÒNG KINH DOANH HN"},
 
     # ==================== PHÒNG TRUYỀN THÔNG & MARKETING ====================
-    "marketing@dieutuongam.com":    {"name": "HUỲNH THỊ BÍCH TUYỀN",                 "role": "Manager",   "department": "PHÒNG TRUYỀN THÔNG & MARKETING",         "password": "123456"},
-    "lehong.dta@gmail.com":         {"name": "LÊ THỊ HỒNG",                 "role": "Employee",  "department": "PHÒNG TRUYỀN THÔNG & MARKETING",         "password": "123456"},
+    "marketing@dieutuongam.com": {"name": "HUỲNH THỊ BÍCH TUYỀN", "role": "Manager", "department": "PHÒNG TRUYỀN THÔNG & MARKETING"},
+    "lehong.dta@gmail.com": {"name": "LÊ THỊ HỒNG", "role": "Employee", "department": "PHÒNG TRUYỀN THÔNG & MARKETING"},
+
     # ==================== PHÒNG KẾ HOẠCH TỔNG HỢP ====================
-    "lehuyen@dieutuongam.com":      {"name": "NGUYỄN THỊ LỆ HUYỀN",         "role": "Manager",   "department": "PHÒNG KẾ HOẠCH TỔNG HỢP",               "password": "123456"},
-    "hatrang@dieutuongam.com": {"name": "PHẠM HÀ TRANG", "role": "Manager", "department": "PHÒNG KẾ HOẠCH TỔNG HỢP", "password": "123456"},
+    "lehuyen@dieutuongam.com": {"name": "NGUYỄN THỊ LỆ HUYỀN", "role": "Manager", "department": "PHÒNG KẾ HOẠCH TỔNG HỢP"},
+    "hatrang@dieutuongam.com": {"name": "PHẠM HÀ TRANG", "role": "Manager", "department": "PHÒNG KẾ HOẠCH TỔNG HỢP"},
 
     # ==================== PHÒNG SÁNG TẠO TỔNG HỢP ====================
-    "thietke@dieutuongam.com":      {"name": "ĐẶNG THỊ MINH THÙY",          "role": "Manager",   "department": "PHÒNG SÁNG TẠO TỔNG HỢP",                "password": "123456"},
-    "ptsp@dieutuongam.com":         {"name": "DƯƠNG NGỌC HIỂU",             "role": "Manager",  "department": "PHÒNG SÁNG TẠO TỔNG HỢP",                "password": "123456"},
-    "qlda@dieutuongam.com":         {"name": "PHẠM THẾ HẢI",                "role": "Manager",  "department": "PHÒNG SÁNG TẠO TỔNG HỢP",                "password": "123456"},
-    "minhdat.dta@gmail.com":        {"name": "LÂM MINH ĐẠT",                "role": "Employee",  "department": "PHÒNG SÁNG TẠO TỔNG HỢP",                "password": "123456"},
-    "thanhvii.dat@gmail.com":       {"name": "LÊ THỊ THANH VI",             "role": "Employee",  "department": "PHÒNG SÁNG TẠO TỔNG HỢP",                "password": "123456"},
-    "quangloi.dta@gmail.com":       {"name": "LÊ QUANG LỢI",                "role": "Employee",  "department": "PHÒNG SÁNG TẠO TỔNG HỢP",                "password": "123456"},
-    "tranlinh.dta@gmail.com":       {"name": "NGUYỄN THỊ PHƯƠNG LINH",      "role": "Employee",  "department": "PHÒNG SÁNG TẠO TỔNG HỢP",                "password": "123456"},
+    "thietke@dieutuongam.com": {"name": "ĐẶNG THỊ MINH THÙY", "role": "Manager", "department": "PHÒNG SÁNG TẠO TỔNG HỢP"},
+    "ptsp@dieutuongam.com": {"name": "DƯƠNG NGỌC HIỂU", "role": "Manager", "department": "PHÒNG SÁNG TẠO TỔNG HỢP"},
+    "qlda@dieutuongam.com": {"name": "PHẠM THẾ HẢI", "role": "Manager", "department": "PHÒNG SÁNG TẠO TỔNG HỢP"},
+    "minhdat.dta@gmail.com": {"name": "LÂM MINH ĐẠT", "role": "Employee", "department": "PHÒNG SÁNG TẠO TỔNG HỢP"},
+    "thanhvii.dat@gmail.com": {"name": "LÊ THỊ THANH VI", "role": "Employee", "department": "PHÒNG SÁNG TẠO TỔNG HỢP"},
+    "quangloi.dta@gmail.com": {"name": "LÊ QUANG LỢI", "role": "Employee", "department": "PHÒNG SÁNG TẠO TỔNG HỢP"},
+    "tranlinh.dta@gmail.com": {"name": "NGUYỄN THỊ PHƯƠNG LINH", "role": "Employee", "department": "PHÒNG SÁNG TẠO TỔNG HỢP"},
 
     # ==================== BỘ PHẬN HỖ TRỢ - GIAO NHẬN ====================
-    "hotro1.dta@gmail.com":         {"name": "NGUYỄN VĂN MẠNH",             "role": "Employee",  "department": "BỘ PHẬN HỖ TRỢ - GIAO NHẬN",              "password": "123456"},
+    "hotro1.dta@gmail.com": {"name": "NGUYỄN VĂN MẠNH", "role": "Employee", "department": "BỘ PHẬN HỖ TRỢ - GIAO NHẬN"},
 }
 
 DEPARTMENTS = [
@@ -134,22 +136,44 @@ DEPARTMENTS = [
     "PHÒNG KINH DOANH HÀ NỘI", "PHÒNG MARKETING", "BOD"
 ]
 
-# ==================== ROUTES ====================
-@app.route("/", methods=["GET", "POST"])
+# ==================== TRANG CHỦ & ĐĂNG NHẬP ====================
+@app.route("/")
+def index():
+    if "user" in session:
+        return redirect(url_for("dashboard"))
+    return redirect(url_for("login"))
+
+@app.route("/login", methods=["GET", "POST"])
 def login():
+    if "user" in session:
+        return redirect(url_for("dashboard"))
+
     if request.method == "POST":
-        email = request.form["email"]
+        email = request.form["email"].strip().lower()
         password = request.form["password"]
-        if email in USERS and USERS[email]["password"] == password:
+
+        user_data = USERS.get(email)
+
+        if user_data and user_data["password"] == password:
             session["user"] = {
                 "email": email,
-                "name": USERS[email]["name"],
-                "role": USERS[email]["role"],
-                "department": USERS[email]["department"]
+                "name": user_data["name"],
+                "role": user_data["role"],
+                "department": user_data["department"]
             }
+
+            # CHỈ BẮT ĐỔI MẬT KHẨU NẾU VẪN ĐANG DÙNG MẬT KHẨU MẶC ĐỊNH
+            if password == "123456":
+                flash("Đây là lần đầu bạn đăng nhập. Vui lòng đổi mật khẩu mới để tiếp tục!", "warning")
+                return redirect(url_for("change_password"))
+
+            # Nếu đã đổi rồi → vào thẳng dashboard
             flash("Đăng nhập thành công!", "success")
             return redirect(url_for("dashboard"))
-        flash("Sai email hoặc mật khẩu!", "danger")
+
+        else:
+            flash("Sai email hoặc mật khẩu!", "danger")
+
     return render_template("login.html")
 
 @app.route("/dashboard")
@@ -305,6 +329,41 @@ def logout():
     session.clear()
     flash("Đã đăng xuất!", "info")
     return redirect(url_for("login"))
+
+@app.route("/change_password", methods=["GET", "POST"])
+@login_required
+def change_password():
+    user = session["user"]
+
+    # Nếu người dùng đã đổi mật khẩu rồi → không cho vào trang này nữa (trừ khi tự bấm link)
+    if USERS[user["email"]]["password"] != "123456":
+        flash("Bạn đã đổi mật khẩu rồi, không cần vào trang này nữa.", "info")
+        return redirect(url_for("dashboard"))
+
+    if request.method == "POST":
+        new_password = request.form["new_password"]
+        confirm_password = request.form["confirm_password"]
+
+        if new_password != confirm_password:
+            flash("Mật khẩu mới không khớp!", "danger")
+            return render_template("change_password.html", user=user)
+
+        if len(new_password) < 6:
+            flash("Mật khẩu mới phải có ít nhất 6 ký tự!", "danger")
+            return render_template("change_password.html", user=user)
+
+        # CẬP NHẬT MẬT KHẨU MỚI → TỪ NAY KHÔNG CÒN BẮT BUỘC NỮA
+        USERS[user["email"]]["password"] = new_password
+        flash("Đổi mật khẩu thành công! Chào mừng bạn đến với hệ thống!", "success")
+        return redirect(url_for("dashboard"))
+
+    return render_template("change_password.html", user=user)
+
+
+
+
+
+
 
 if __name__ == "__main__":
     init_db()
